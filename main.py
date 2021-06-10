@@ -19,7 +19,7 @@ st.markdown('''aaaaaaaaaaaaaahjhjhbjhb''')
 with st.echo(code_location="above"):
     st.set_option('deprecation.showPyplotGlobalUse', False)
 
-    df = pd.read_csv("C:/Users/asverdlin/Downloads/tracks.csv")
+    df = pd.read_csv("tracks.csv")
 
     df.sort_values(by = 'popularity', ascending = False)[0:1000]
 
