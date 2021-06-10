@@ -25,6 +25,7 @@ with st.echo(code_location="above"):
 
     regr = LinearRegression()
 
+
     columns = [
      'duration_ms',
      'explicit',
