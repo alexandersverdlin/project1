@@ -12,16 +12,18 @@ from pyvis.network import Network
 import streamlit as st
 
 
-st.title('Ежжи ежжи эзжиэ')
-st.markdown('''aaaaaaaaaaaaaahjhjhbjhb''')
+st.title('Как написать трек, который разорвет чарты: изучаем на данных')
+st.markdown('''В первой части с помощью R мы посмотрим на факторы 
+            популярности треков, во второй с помощью Python построим 
+            регрессии, граф фитов популярных исполнителей и поймем, 
+            насколько музыка - хороший выбор, чтобы стать знаменитым''')
 
 
 with st.echo(code_location="above"):
-    st.set_option('deprecation.showPyplotGlobalUse', False)
 
-    # df_full = pd.read_csv("C:/Users/asverdlin/Downloads/tracks.csv")
+    # df_full = pd.read_csv("tracks.csv")
     # df_lite = df_full.sample(frac=1)[0:100000]
-    # df_lite.to_csv('C:/Users/asverdlin/Downloads/track_lite.csv')
+    # df_lite.to_csv('track_lite.csv')
 
     df = pd.read_csv("tracks_lite.csv")
 
@@ -45,6 +47,9 @@ with st.echo(code_location="above"):
 
     df_coefs = pd.DataFrame()
 
+with st.echo(code_location="above"):
+    st.set_option('deprecation.showPyplotGlobalUse', False)
+
     for column in columns:
         X = df[[column]]
         Y = df['popularity']
@@ -56,31 +61,35 @@ with st.echo(code_location="above"):
         st.pyplot(fig)
         df_coefs[column] = regr.coef_
 
+with st.echo(code_location="above"):
+    st.set_option('deprecation.showPyplotGlobalUse', False)
+
     coefs = df_coefs.transpose().sort_values(0).rename(columns={0: "coefficient"})
     plt.plot(1)
     coefs.plot.bar(color = 'orange')
     fig = plt.plot()
     st.pyplot(fig)
 
-    # df_full = pd.read_csv("C:/Users/asverdlin/Downloads/tracks.csv")
-    # df_feats = df_full.sort_values(by = 'popularity', ascending = False)['artists']
-    # df_feats.to_csv('C:/Users/asverdlin/Downloads/df_feats.csv')
+with st.echo(code_location="above"):
+    st.set_option('deprecation.showPyplotGlobalUse', False)
 
-    # artists_full = pd.read_csv("C:/Users/asverdlin/Downloads/artists.csv")
+    # df_full = pd.read_csv("tracks.csv")
+    # df_feats = df_full.sort_values(by = 'popularity', ascending = False)['artists']
+    # df_feats.to_csv('df_feats.csv')
+
+    # artists_full = pd.read_csv("artists.csv")
     # artists_lite = artists_full.sort_values(by = 'followers', ascending = False)[0:1000]
-    # artists_lite.to_csv('C:/Users/asverdlin/Downloads/artists_lite.csv')
+    # artists_lite.to_csv('artists_lite.csv')
 
     artists = pd.read_csv("artists_lite.csv")
     df_feats = pd.read_csv("df_feats.csv")
 
     most_followed_artists = artists.sort_values(by='followers', ascending=False)[0:50]
 
-    G = nx.Graph()
-
     vertices = list(most_followed_artists['name'])
     vertices
 
-    G.add_nodes_from(vertices)
+with st.echo(code_location="above"):
 
     feats = set()
     for star in vertices:
@@ -96,6 +105,8 @@ with st.echo(code_location="above"):
                     if star in feat and star2 in feat:
                         true_feats.add(feat)
 
+with st.echo(code_location="above"):
+
     feats_list = [feat.replace("'", "").replace('[', '').replace(']', '').split(', ') for feat in true_feats]
 
     for feat in feats_list:
@@ -107,8 +118,16 @@ with st.echo(code_location="above"):
         if len(el) > 2 or len(el) < 2:
             feats_list.remove(el)
 
+with st.echo(code_location="above"):
+
     feats_list_tuples = [tuple(el) for el in feats_list]
     feats_list_tuples
+
+with st.echo(code_location="above"):
+
+    G = nx.Graph()
+
+    G.add_nodes_from(vertices)
 
     G.add_edges_from(feats_list_tuples)
 
