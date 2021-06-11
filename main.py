@@ -91,7 +91,6 @@ with st.echo(code_location="above"):
     true_feats = set()
     for feat in feats:
         for star in vertices:
-            vertices
             for star2 in vertices:
                 if star != star2:
                     if star in feat and star2 in feat:
