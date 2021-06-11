@@ -249,7 +249,7 @@ with st.echo(code_location="above"):
 with st.echo(code_location="above"):
     from PIL import Image
     image = Image.open("Screenshot_4.png")
-    display(image)
+    plt.imshow(image)
 
 with st.echo(code_location="above"):
     import matplotlib.image as mpimg
