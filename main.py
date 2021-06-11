@@ -41,32 +41,20 @@ st.code('''
     ''')
 
 st.markdown('''
-Посмотрим на датасет. Помимо названия, списка исполнителей, даты релиза и популярности тут есть много других метрик. Значение большинства понятно из названия, уточним лишь некоторые: 
-mode (0 - мажор, 1 - минор)
-key (тональность, от 0 до 11, начиная от C)
+Посмотрим на датасет. Помимо названия, списка исполнителей, даты релиза и популярности тут есть много других метрик. Значение большинства понятно из названия, уточним лишь некоторые:
+mode (0 - мажор, 1 - минор),
+key (тональность, от 0 до 11, начиная от C),
 explicit (0 - нет контента 18+, 1 - есть)
 ''')
 with st.echo(code_location="above"):
     df = pd.read_csv("tracks_lite.csv")
-    df.sort_values(by='popularity', ascending=False)[0:20]
+    df.sort_values(by='popularity', ascending=False, ignore_index=True)[0:20]
 
 st.markdown('''
 Теперь можно запускать обучение, чтобы понять, как зависит популярность трека от разных факторов''')
 
 with st.echo(code_location="above"):
-    columns = [
-        'duration_ms',
-        'explicit',
-        'danceability',
-        'energy',
-        'key',
-        'loudness',
-        'mode',
-        'speechiness',
-        'acousticness',
-        'instrumentalness',
-        'liveness',
-        'tempo']
+    columns = ['duration_ms', 'explicit', 'danceability', 'energy', 'key', 'loudness', 'mode', 'speechiness', 'acousticness', 'instrumentalness', 'liveness', 'tempo']
     df_coefs = pd.DataFrame()
     regr = LinearRegression()
     st.set_option('deprecation.showPyplotGlobalUse', False)
@@ -94,8 +82,11 @@ with st.echo(code_location="above"):
     fig = plt.plot()
     st.pyplot(fig)
 
+st.markdown('''
+Итак, лучше забыть про акустику и инструментальность, если хочешь написать популярный трек. Также поменьше говори, найди студию получше и не пиши мелодию в миноре. Темп, тональность и длительность можно выбрать любую, но лучше не забыть добавить в песню такого текста, чтобы детям слушать было нельзя
+''')
 
-st.header(''
+st.header('  \nline
           'Nicki Minaj на фитах: граф совместных треков самых популярных исполнителей')
 
 st.markdown('''Получим данные для графа. Из artists.csv мы возьмем исполнителей с наибольшим числом фолловеров. Из tracks.csv возьмем верхнюю треть самых популярных треков и вытащим из них списки исполнителей. Все это нужно из-за того, что на GitHub целиком файлы не помещаются. 
@@ -242,7 +233,7 @@ with st.echo(code_location="above"):
     st.set_option('deprecation.showPyplotGlobalUse', False)
     plt.plot(1)
     df_celebs['country'].value_counts().sort_values().plot.pie(y='mln_followers', labeldistance=1.1, legend=None,
-                                                               figsize=(10, 10))
+                                                               figsize=(7, 7))
     fig = plt.plot()
     st.pyplot(fig)
 
