@@ -248,11 +248,13 @@ with st.echo(code_location="above"):
 
 with st.echo(code_location="above"):
     from PIL import Image
-    image = Image.open("Screenshot_4.png")
-    plt.imshow(image)
+    from IPython.display import display
+
+    img = Image.open('Screenshot_4.png')
+    display(img)
 
 with st.echo(code_location="above"):
     import matplotlib.image as mpimg
-    img = mpimg.imread('C:/Users/asverdlin/Downloads/Screenshot_4.png')
+    img = mpimg.imread('Screenshot_4.png')
     imgplot = plt.imshow(img)
     plt.axis("off")
