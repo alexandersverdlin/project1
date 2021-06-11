@@ -19,27 +19,29 @@ st.markdown('''aaaaaaaaaaaaaahjhjhbjhb''')
 with st.echo(code_location="above"):
     st.set_option('deprecation.showPyplotGlobalUse', False)
 
-    df = pd.read_csv("tracks.csv")
+    # df_full = pd.read_csv("C:/Users/asverdlin/Downloads/tracks.csv")
+    # df_lite = df_full.sample(frac=1)[0:100000]
+    # df_lite.to_csv('C:/Users/asverdlin/Downloads/track_lite.csv')
 
-    df.sort_values(by = 'popularity', ascending = False)[0:1000]
+    df = pd.read_csv("tracks_lite.csv")
+
+    df.sort_values(by='popularity', ascending=False)[0:1000]
 
     regr = LinearRegression()
 
-
     columns = [
-     'duration_ms',
-     'explicit',
-     'danceability',
-     'energy',
-     'key',
-     'loudness',
-     'mode',
-     'speechiness',
-     'acousticness',
-     'instrumentalness',
-     'liveness',
-     'tempo']
-
+        'duration_ms',
+        'explicit',
+        'danceability',
+        'energy',
+        'key',
+        'loudness',
+        'mode',
+        'speechiness',
+        'acousticness',
+        'instrumentalness',
+        'liveness',
+        'tempo']
 
     df_coefs = pd.DataFrame()
 
@@ -48,12 +50,11 @@ with st.echo(code_location="above"):
         Y = df['popularity']
         regr.fit(X, Y)
         plt.plot(1)
-        df.plot.scatter(column, 'popularity', alpha = 0.1)
+        df.plot.scatter(column, 'popularity', alpha=0.1)
         plt.plot(X[column], regr.predict(X), color='C1')
         fig = plt.plot()
         st.pyplot(fig)
         df_coefs[column] = regr.coef_
-
 
     coefs = df_coefs.transpose().sort_values(0).rename(columns={0: "coefficient"})
     plt.plot(1)
