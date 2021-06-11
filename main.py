@@ -185,6 +185,12 @@ net.from_nx(G)
 net.show("feats.html")
 ''')
 
+img = Image.open('graph.png')
+st.image(img, caption='Есть исполнители вроде Twenty One Pilots, которые предпочитают исполнять свои песни сами. Но есть и группа популярных исполнителей, которые между собой успели записать много совместных треков')
+
+img2 = Image.open('graph_closer.png')
+st.image(img2, caption='Если приблизить, становятся видны, во-первых, 2 группы: американских и латиноамериканских исполнителей. Ну и музыканты вроде Justin Bieber и Nicki Minaj, которые успели записать очень много фитов')
+
 st.header(''
           'Музыка - легкий путь к славе? Посмотрим, насколько популярные инстаграмы музыкантов')
 
@@ -246,8 +252,3 @@ with st.echo(code_location="above"):
     fig = plt.plot()
     st.pyplot(fig)
 
-with st.echo(code_location="above"):
-    from PIL import Image
-    img = Image.open('Screenshot_4.png')
-
-st.image(img, caption='Коля лох')
