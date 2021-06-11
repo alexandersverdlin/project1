@@ -160,8 +160,7 @@ st.header('Музыка - легкий путь к славе? Посмотри�
 
 st.markdown('С помощью Selenium соберем данные с таблички Instagram-аккаунтов с наибольшим количеством подписчиков')
 
-with st.echo(code_location="above"):
-    driver = Chrome(executable_path="chromedriver.exe")
+st.code('''driver = Chrome(executable_path="chromedriver.exe")
 
     driver.get("https://en.wikipedia.org/wiki/List_of_most-followed_Instagram_accounts")
     driver.implicitly_wait(2)
@@ -182,11 +181,16 @@ with st.echo(code_location="above"):
         df_temp = pd.DataFrame(data=[[insta, name, mln_followers, field, country]],
                                columns=['instagram', 'name', 'mln_followers', 'field', 'country'])
         df_celebs = df_celebs.append(df_temp)
+        df_celebs = df_celebs.reset_index().drop(columns=['index'])
+        ''')
 
-st.markdown('Получили таблицу таких аккаунтов. Посмотрим на нее:')
+
+st.markdown('Получили таблицу таких аккаунтов. Поскольку heroku плохо работает с Selenium, результат выполнения кода мы сохранили локально. Посмотрим на получившийся датафрейм:')
 
 with st.echo(code_location="above"):
-    df_celebs = df_celebs.reset_index().drop(columns=['index'])
+    # df_celebs.to_csv('celebs.csv')
+
+    df_celebs = pd.read_csv('celebs.csv')
     df_celebs
 
 st.markdown('Посмотрим, из каких стран самые популярные знаменитости в инстаграме')
