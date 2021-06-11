@@ -15,17 +15,23 @@ import streamlit as st
 st.title('Как написать трек, который разорвет чарты: изучаем на данных')
 st.header('О проекте и используемых данных')
 st.subheader('Датасет')
-st.markdown('''Мы будем использовать датасет от Spotify. В нем для всех песен на Spotify указана популярность на апрель 2021 года и множество факторов от 0 до 1, которые автоматические рассчитывает Spotify: в том числе energy, danceability, acousticness и т.д. Скоро мы посмотрим на него поближе, но при желании подробнее можно прочитать тут: https://www.kaggle.com/yamaerenay/spotify-dataset-19212020-160k-tracks?select=artists.csv''')
+st.markdown('''Мы будем использовать датасет от Spotify. В нем для всех песен на Spotify указана популярность на апрель 2021 года и множество факторов от 0 до 1, которые автоматические рассчитывает Spotify: в том числе energy, danceability, acousticness и т.д. Скоро мы посмотрим на него поближе, но при желании подробнее про датасет можно прочитать тут: https://www.kaggle.com/yamaerenay/spotify-dataset-19212020-160k-tracks?select=artists.csv''')
 st.subheader('Описание проекта')
 st.markdown('''Проект состоит из двух частей - R и Python. В первой части с помощью R мы поближе посмотрим на факторы популярности треков и сделаем несколько интересных визуализаций. 
-Во второй с помощью Python построим регрессии для этих факторов и поймем, каким должен быть трек, чтобы с большей вероятностью стать популярным граф фитов популярных исполнителей и поймем, насколько музыка - хороший выбор, чтобы стать знаменитым. Также мы построим граф фитов 50 самых популярных исполнителей на Spotify. А в конце спарсим таблицу самых популярных аккаунтов в Instagram из Википедии, чтобы понять, насколько музыканты популярны относительно других знаменитостей''')
+Во второй с помощью Python построим регрессии для этих факторов и поймем, каким должен быть трек, чтобы с большей вероятностью стать популярным. Также мы построим граф фитов 50 самых популярных исполнителей на Spotify. А в конце спарсим таблицу самых популярных аккаунтов в Instagram из Википедии, чтобы понять, насколько музыканты популярны относительно других знаменитостей''')
+st.subheader('Используемые технологии')
+st.markdown('''1. Pandas
+2. Selenium
+3. Streamlit
+4. R и tidyverse
+5. ggplot2 с расширениями
+6. Машинное обучение: регрессии
+7. Графы на networkx
+''')
 
 
-
-st.markdown('''К сожалению, файл слишком большой, чтобы влезть на GitHub, поэтому 
-            для регрессии нам придется оставить только его пятую часть, рандомные 
-            100000 строк. Это сделано с помощью следующего кода:
-            ''')
+st.header('Регрессии: чем больше мата и громче трек, тем популярней?')
+st.markdown('''Пора посмотреть на датасет песен. К сожалению, файл слишком большой, чтобы влезть на GitHub, поэтому для регрессии нам придется оставить только его пятую часть, рандомные 100000 строк. Это сделано с помощью следующего кода:''')
 
 st.code('''
     df_full = pd.read_csv("tracks.csv")
@@ -33,16 +39,18 @@ st.code('''
     df_lite.to_csv('track_lite.csv')
     ''')
 
-
+st.markdown('''Посмотрим на датасет. Помимо названия, списка исполнителей, даты релиза и популярности тут есть много других метрик. Значение большинства понятно из названия, уточним лишь некоторые: 
+mode (0 - мажор, 1 - минор)
+key (тональность, от 0 до 11, начиная от C)
+explicit (0 - нет контента 18+, 1 - есть)
+''')
 with st.echo(code_location="above"):
-
     df = pd.read_csv("tracks_lite.csv")
-
     df.sort_values(by='popularity', ascending=False)[0:20]
 
-    regr = LinearRegression()
-
-    columns = [
+st.markdown('''Теперь можно запускать обучение, чтобы понять, как зависит популярность трека от разных факторов''')
+with st.echo(code_location="above"):
+        columns = [
         'duration_ms',
         'explicit',
         'danceability',
@@ -55,10 +63,8 @@ with st.echo(code_location="above"):
         'instrumentalness',
         'liveness',
         'tempo']
-
+    regr = LinearRegression()
     df_coefs = pd.DataFrame()
-
-with st.echo(code_location="above"):
     st.set_option('deprecation.showPyplotGlobalUse', False)
 
     for column in columns:
@@ -72,6 +78,8 @@ with st.echo(code_location="above"):
         st.pyplot(fig)
         df_coefs[column] = regr.coef_
 
+st.markdown('''Пока мы строили графики, мы записывали коэффициенты регрессии в датасет. Теперь можно сравнить разные факторы между собой и понять, что больше всего связано с популярностью трека и в какую сторону''')
+
 with st.echo(code_location="above"):
     st.set_option('deprecation.showPyplotGlobalUse', False)
 
@@ -80,6 +88,9 @@ with st.echo(code_location="above"):
     coefs.plot.bar(color = '#33CCCC')
     fig = plt.plot()
     st.pyplot(fig)
+
+
+st.header('Дальше пока можно не смотреть')
 
 with st.echo(code_location="above"):
     st.set_option('deprecation.showPyplotGlobalUse', False)
