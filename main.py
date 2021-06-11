@@ -157,3 +157,50 @@ with st.echo(code_location="above"):
     net = Network(width='1000px', notebook=True)
     net.from_nx(G)
     net.show("feats.html")
+
+st.header('Музыка - легкий путь к славе? Посмотрим, насколько популярные инстаграмы музыкантов')
+
+st.markdown('С помощью Selenium соберем данные с таблички Instagram-аккаунтов с наибольшим количеством подписчиков')
+
+with st.echo(code_location="above"):
+    driver = Chrome(executable_path="chromedriver.exe")
+
+    driver.get("https://en.wikipedia.org/wiki/List_of_most-followed_Instagram_accounts")
+    driver.implicitly_wait(2)
+
+    table = driver.find_elements_by_tag_name("tr")
+    our_table = table[1:51]
+
+    df_celebs = pd.DataFrame(columns=['instagram', 'name', 'mln_followers', 'field', 'country'])
+
+    for i in range(50):
+        string = our_table[i].find_elements_by_tag_name("td")
+        insta = string[0].text
+        name = string[1].text
+        mln_followers = int(float(string[2].text))
+        field = string[3].text
+        country = string[4].text
+        country = country[1:len(country)]
+        df_temp = pd.DataFrame(data=[[insta, name, mln_followers, field, country]],
+                               columns=['instagram', 'name', 'mln_followers', 'field', 'country'])
+        df_celebs = df_celebs.append(df_temp)
+
+st.markdown('Получили таблицу таких аккаунтов. Посмотрим на нее:')
+
+with st.echo(code_location="above"):
+    df_celebs = df_celebs.reset_index().drop(columns=['index'])
+    df_celebs
+
+st.markdown('Посмотрим, из каких стран самые популярные знаменитости в инстаграме')
+
+with st.echo(code_location="above"):
+    st.set_option('deprecation.showPyplotGlobalUse', False)
+    df_celebs['country'].value_counts().sort_values().plot.pie(y='mln_followers', labeldistance=1.1, legend=None,
+                                                               figsize=(10, 10))
+
+st.markdown('А вот и музыканты: по сумме подписчиков музыканты в отрыве от остальных родов занятий. При этом музыканты появляются и в других категориях: музыка является трамплином для того, чтобы оказаться в новых сферах')
+
+with st.echo(code_location="above"):
+    st.set_option('deprecation.showPyplotGlobalUse', False)
+    df_pie = df_celebs.groupby(['field']).sum(['mln_followers']).sort_values('mln_followers')
+    df_pie.plot.pie(y='mln_followers', labeldistance=1.1, legend=None, figsize=(10, 10))
