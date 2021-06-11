@@ -150,6 +150,8 @@ with st.echo(code_location="above"):
 
     for feat in feats_list:
         feat = sorted(feat)
+
+    for feat in feats_list:
         if len(feat) > 2:
             for artist in feat:
                 for artist2 in feat:
