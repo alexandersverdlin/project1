@@ -248,13 +248,6 @@ with st.echo(code_location="above"):
 
 with st.echo(code_location="above"):
     from PIL import Image
-    from IPython.display import display
-
     img = Image.open('Screenshot_4.png')
-    display(img)
 
-with st.echo(code_location="above"):
-    import matplotlib.image as mpimg
-    img = mpimg.imread('Screenshot_4.png')
-    imgplot = plt.imshow(img)
-    plt.axis("off")
+st.image(img, caption='Коля лох')
