@@ -149,14 +149,12 @@ with st.echo(code_location="above"):
     feats_list_tuples = [tuple(el) for el in feats_list]
     feats_list_tuples
 
-with st.echo(code_location="above"):
-
-    G = nx.Graph()
-    G.add_nodes_from(vertices)
-    G.add_edges_from(feats_list_tuples)
-    net = Network(width='1000px', notebook=True)
-    net.from_nx(G)
-    net.show("feats.html")
+#    G = nx.Graph()
+#    G.add_nodes_from(vertices)
+#    G.add_edges_from(feats_list_tuples)
+#    net = Network(width='1000px', notebook=True)
+#    net.from_nx(G)
+#    net.show("feats.html")
 
 st.header('Музыка - легкий путь к славе? Посмотрим, насколько популярные инстаграмы музыкантов')
 
