@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 from pyvis.network import Network
 import streamlit as st
+from PIL import Image
 
 
 st.title('Как написать трек, который разорвет чарты: изучаем на данных')
@@ -244,3 +245,14 @@ with st.echo(code_location="above"):
     df_pie.plot.pie(y='mln_followers', labeldistance=1.1, legend=None, figsize=(10, 10))
     fig = plt.plot()
     st.pyplot(fig)
+
+with st.echo(code_location="above"):
+    from PIL import Image
+    image = Image.open("Screenshot_4.png")
+    display(image)
+
+with st.echo(code_location="above"):
+    import matplotlib.image as mpimg
+    img = mpimg.imread('C:/Users/asverdlin/Downloads/Screenshot_4.png')
+    imgplot = plt.imshow(img)
+    plt.axis("off")
