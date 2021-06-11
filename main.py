@@ -13,21 +13,32 @@ import streamlit as st
 
 
 st.title('Как написать трек, который разорвет чарты: изучаем на данных')
-st.markdown('''В первой части с помощью R мы посмотрим на факторы 
+st.subheader('''В первой части с помощью R мы посмотрим на факторы 
             популярности треков, во второй с помощью Python построим 
             регрессии, граф фитов популярных исполнителей и поймем, 
             насколько музыка - хороший выбор, чтобы стать знаменитым''')
 
+st.markdown('''Мы будем использовать датасет от Spotify - tracks.csv. 
+            К сожалению, файл слишком большой, чтобы влезть на GitHub, поэтому нам
+            ''')
+
+st.markdown('''К сожалению, файл слишком большой, чтобы влезть на GitHub, поэтому 
+            для регрессии нам придется оставить только его пятую часть, рандомные 
+            100000 строк. Это сделано с помощью следующего кода:
+            ''')
+
+st.code('''
+    df_full = pd.read_csv("tracks.csv")
+    df_lite = df_full.sample(frac=1)[0:100000]
+    df_lite.to_csv('track_lite.csv')
+    ''')
+
 
 with st.echo(code_location="above"):
 
-    # df_full = pd.read_csv("tracks.csv")
-    # df_lite = df_full.sample(frac=1)[0:100000]
-    # df_lite.to_csv('track_lite.csv')
-
     df = pd.read_csv("tracks_lite.csv")
 
-    df.sort_values(by='popularity', ascending=False)[0:1000]
+    df.sort_values(by='popularity', ascending=False)[0:20]
 
     regr = LinearRegression()
 
@@ -55,8 +66,8 @@ with st.echo(code_location="above"):
         Y = df['popularity']
         regr.fit(X, Y)
         plt.plot(1)
-        df.plot.scatter(column, 'popularity', alpha=0.1)
-        plt.plot(X[column], regr.predict(X), color='C1')
+        df.plot.scatter(column, 'popularity', alpha=0.1, color='#33CCCC')
+        plt.plot(X[column], regr.predict(X), color='#006666')
         fig = plt.plot()
         st.pyplot(fig)
         df_coefs[column] = regr.coef_
@@ -66,7 +77,7 @@ with st.echo(code_location="above"):
 
     coefs = df_coefs.transpose().sort_values(0).rename(columns={0: "coefficient"})
     plt.plot(1)
-    coefs.plot.bar(color = 'orange')
+    coefs.plot.bar(color = '#33CCCC')
     fig = plt.plot()
     st.pyplot(fig)
 
@@ -130,11 +141,8 @@ with st.echo(code_location="above"):
 with st.echo(code_location="above"):
 
     G = nx.Graph()
-
     G.add_nodes_from(vertices)
-
     G.add_edges_from(feats_list_tuples)
-
     net = Network(width='1000px', notebook=True)
     net.from_nx(G)
     net.show("feats.html")
