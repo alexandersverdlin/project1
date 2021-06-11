@@ -118,6 +118,10 @@ with st.echo(code_location="above"):
         if len(el) > 2 or len(el) < 2:
             feats_list.remove(el)
 
+    for el in feats_list:
+        if len(el) > 3:
+            feats_list.remove(el)
+
 with st.echo(code_location="above"):
 
     feats_list_tuples = [tuple(el) for el in feats_list]
