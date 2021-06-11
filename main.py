@@ -29,7 +29,8 @@ st.markdown('''1. Pandas
 ''')
 
 
-st.header('Регрессии: чем больше мата и громче трек, тем популярней?')
+st.header(''
+          'Регрессии: чем больше мата и громче трек, тем популярней?')
 st.markdown('''Пора посмотреть на датасет песен. К сожалению, файл слишком большой, чтобы влезть на GitHub, поэтому для регрессии нам придется оставить только его пятую часть, рандомные 100000 строк. Это сделано с помощью следующего кода:''')
 
 st.code('''
@@ -38,7 +39,8 @@ st.code('''
     df_lite.to_csv('track_lite.csv')
     ''')
 
-st.markdown('''Посмотрим на датасет. Помимо названия, списка исполнителей, даты релиза и популярности тут есть много других метрик. Значение большинства понятно из названия, уточним лишь некоторые: 
+st.markdown('''
+Посмотрим на датасет. Помимо названия, списка исполнителей, даты релиза и популярности тут есть много других метрик. Значение большинства понятно из названия, уточним лишь некоторые: 
 mode (0 - мажор, 1 - минор)
 key (тональность, от 0 до 11, начиная от C)
 explicit (0 - нет контента 18+, 1 - есть)
@@ -47,7 +49,8 @@ with st.echo(code_location="above"):
     df = pd.read_csv("tracks_lite.csv")
     df.sort_values(by='popularity', ascending=False)[0:20]
 
-st.markdown('''Теперь можно запускать обучение, чтобы понять, как зависит популярность трека от разных факторов''')
+st.markdown('''
+Теперь можно запускать обучение, чтобы понять, как зависит популярность трека от разных факторов''')
 
 with st.echo(code_location="above"):
     columns = [
@@ -78,7 +81,8 @@ with st.echo(code_location="above"):
         st.pyplot(fig)
         df_coefs[column] = regr.coef_
 
-st.markdown('''Пока мы строили графики, мы записывали коэффициенты регрессии в датасет. Теперь можно сравнить разные факторы между собой и понять, что больше всего связано с популярностью трека и в какую сторону''')
+st.markdown('''
+Пока мы строили графики, мы записывали коэффициенты регрессии в датасет. Теперь можно сравнить разные факторы между собой и понять, что больше всего связано с популярностью трека и в какую сторону''')
 
 with st.echo(code_location="above"):
     st.set_option('deprecation.showPyplotGlobalUse', False)
@@ -90,27 +94,39 @@ with st.echo(code_location="above"):
     st.pyplot(fig)
 
 
-st.header('Дальше пока можно не смотреть')
+st.header(''
+          'Nicki Minaj на фитах: граф совместных треков самых популярных исполнителей')
+
+st.markdown('''Получим данные для графа. Из artists.csv мы возьмем исполнителей с наибольшим числом фолловеров. Из tracks.csv возьмем верхнюю треть самых популярных треков и вытащим из них списки исполнителей. Все это нужно из-за того, что на GitHub целиком файлы не помещаются. 
+''')
+st.code('''    df_full = pd.read_csv("tracks.csv")
+    df_feats = df_full.sort_values(by = 'popularity', ascending = False)['artists']
+    df_feats.to_csv('df_feats.csv')
+
+    artists_full = pd.read_csv("artists.csv")
+    artists_lite = artists_full.sort_values(by = 'followers', ascending = False)[0:1000]
+    artists_lite.to_csv('artists_lite.csv')
+''')
+
 
 with st.echo(code_location="above"):
-    st.set_option('deprecation.showPyplotGlobalUse', False)
-
-    # df_full = pd.read_csv("tracks.csv")
-    # df_feats = df_full.sort_values(by = 'popularity', ascending = False)['artists']
-    # df_feats.to_csv('df_feats.csv')
-
-    # artists_full = pd.read_csv("artists.csv")
-    # artists_lite = artists_full.sort_values(by = 'followers', ascending = False)[0:1000]
-    # artists_lite.to_csv('artists_lite.csv')
 
     artists = pd.read_csv("artists_lite.csv")
     df_feats = pd.read_csv("df_feats.csv")
 
+st.markdown('''
+Возьмем 50 артистов с наибольшим количеством фолловеров на Spotify. Это будут вершины графа
+    ''')
+
+with st.echo(code_location="above"):
     most_followed_artists = artists.sort_values(by='followers', ascending=False)[0:50]
 
     vertices = list(most_followed_artists['name'])
     vertices
 
+st.markdown('''
+Теперь сделаем список всех фитов с этими звездами, а затем оставим только те, в которых есть два музыканта из топ-50
+    ''')
 with st.echo(code_location="above"):
 
     feats = set()
@@ -126,6 +142,10 @@ with st.echo(code_location="above"):
                 if star != star2:
                     if star in feat and star2 in feat:
                         true_feats.add(feat)
+
+
+st.markdown('''
+Немного почистим данные (они в виде строки, а не списка) и уберем из фитов артистов, которые не входят в топ-50''')
 
 with st.echo(code_location="above"):
 
@@ -144,23 +164,32 @@ with st.echo(code_location="above"):
         if len(el) > 3:
             feats_list.remove(el)
 
+st.markdown('''
+Посмотреть на получившие кортежи фитов можно, раскрыв вывод. Эти кортежи и будут ребрами графа''')
+
 with st.echo(code_location="above"):
 
     feats_list_tuples = [tuple(el) for el in feats_list]
     feats_list_tuples
 
-#    G = nx.Graph()
-#    G.add_nodes_from(vertices)
-#    G.add_edges_from(feats_list_tuples)
-#    net = Network(width='1000px', notebook=True)
-#    net.from_nx(G)
-#    net.show("feats.html")
+st.markdown('''
+Следующий код делает нам граф в Jupiter Notebook. Его очень приятно зумить и двигать, но из-за проблем Heroku с networkx сюда можно вставить только скрин результата''')
 
-st.header('Музыка - легкий путь к славе? Посмотрим, насколько популярные инстаграмы музыкантов')
+st.code('''
+G = nx.Graph()
+G.add_nodes_from(vertices)
+G.add_edges_from(feats_list_tuples)
+net = Network(width='1000px', notebook=True)
+net.from_nx(G)
+net.show("feats.html")
+''')
+
+st.header(''
+          'Музыка - легкий путь к славе? Посмотрим, насколько популярные инстаграмы музыкантов')
 
 st.markdown('С помощью Selenium соберем данные с таблички Instagram-аккаунтов с наибольшим количеством подписчиков')
 
-st.code('''driver = Chrome(executable_path="chromedriver.exe")
+st.code('''    driver = Chrome(executable_path="chromedriver.exe")
 
     driver.get("https://en.wikipedia.org/wiki/List_of_most-followed_Instagram_accounts")
     driver.implicitly_wait(2)
@@ -185,7 +214,8 @@ st.code('''driver = Chrome(executable_path="chromedriver.exe")
         ''')
 
 
-st.markdown('Получили таблицу таких аккаунтов. Поскольку heroku плохо работает с Selenium, результат выполнения кода мы сохранили локально. Посмотрим на получившийся датафрейм:')
+st.markdown(''
+            'Получили таблицу таких аккаунтов. Поскольку heroku плохо работает с Selenium, результат выполнения кода мы сохранили локально. Посмотрим на получившийся датафрейм:')
 
 with st.echo(code_location="above"):
     # df_celebs.to_csv('celebs.csv')
@@ -193,16 +223,24 @@ with st.echo(code_location="above"):
     df_celebs = pd.read_csv('celebs.csv')
     df_celebs
 
-st.markdown('Посмотрим, из каких стран самые популярные знаменитости в инстаграме')
+st.markdown(''
+            'Посмотрим, из каких стран самые популярные знаменитости в инстаграме')
 
 with st.echo(code_location="above"):
     st.set_option('deprecation.showPyplotGlobalUse', False)
+    plt.plot(1)
     df_celebs['country'].value_counts().sort_values().plot.pie(y='mln_followers', labeldistance=1.1, legend=None,
                                                                figsize=(10, 10))
+    fig = plt.plot()
+    st.pyplot(fig)
 
-st.markdown('А вот и музыканты: по сумме подписчиков музыканты в отрыве от остальных родов занятий. При этом музыканты появляются и в других категориях: музыка является трамплином для того, чтобы оказаться в новых сферах')
+st.markdown(''
+            'А вот и музыканты: по сумме подписчиков музыканты в отрыве от остальных родов занятий. При этом музыканты появляются и в других категориях: музыка является трамплином для того, чтобы оказаться в новых сферах')
 
 with st.echo(code_location="above"):
     st.set_option('deprecation.showPyplotGlobalUse', False)
     df_pie = df_celebs.groupby(['field']).sum(['mln_followers']).sort_values('mln_followers')
+    plt.plot(1)
     df_pie.plot.pie(y='mln_followers', labeldistance=1.1, legend=None, figsize=(10, 10))
+    fig = plt.plot()
+    st.pyplot(fig)
