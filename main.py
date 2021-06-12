@@ -124,10 +124,12 @@ dat$year = format(dat$release_date, "%Y")
 st.markdown('''
 Теперь давайте смотреть на получившиеся графики''')
 st.code('''
+```{r}
 dat %>% filter(dat$year %in% c(1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020))  %>% ggplot(aes(x = energy, y = year)) + 
   geom_density_ridges(scale = 4, size = 1, fill = 'orange', color = 'black', alpha = 0.9) +
   theme_bw() +
   labs(title =  'Сейчас музыка энергичней, чем в середине прошлого века', subtitle = 'Однако в 2020 году музыка заметно спокойнее, чем в 2010')
+```
 ''')
 img3 = Image.open('img3.png')
 st.image(img3)
@@ -138,7 +140,7 @@ dat %>% filter(dat$year %in% c(1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2
   theme_bw() +
   labs(title =  'Сейчас музыка энергичней, чем в середине прошлого века', subtitle = 'Однако в 2020 году музыка заметно спокойнее, чем в 2010')
 ''')
-img4 = Image.open('img4.png')
+img4 = Image.open('img4.png').convert('RGB')
 st.image(img4)
 
 st.code('''
