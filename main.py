@@ -126,30 +126,31 @@ img3 = Image.open('img3.png').convert('RGB')
 st.image(img3)
 
 st.code('''
-dat %>% filter(dat$year %in% c(1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020))  %>% ggplot(aes(x = energy, y = year)) + 
+dat %>% filter(dat$year %in% c(1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020))  %>% ggplot(aes(x = acousticness, y = year)) + 
   geom_density_ridges(scale = 4, size = 1, fill = 'orange', color = 'black', alpha = 0.9) +
   theme_bw() +
-  labs(title =  'Сейчас музыка энергичней, чем в середине прошлого века', subtitle = 'Однако в 2020 году музыка заметно спокойнее, чем в 2010')
-''')
+  labs(title =  'В 60-х произошел резкий скачок', subtitle = 'Музыка перестала быть акустичной')
+  ''')
 img4 = Image.open('img4.png').convert('RGB')
 st.image(img4)
 
 st.code('''
-dat %>% filter(dat$year %in% c(1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020))  %>% ggplot(aes(x = energy, y = year)) + 
+dat %>% filter(dat$year %in% c(1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020))  %>% ggplot(aes(x = popularity, y = year)) + 
   geom_density_ridges(scale = 4, size = 1, fill = 'orange', color = 'black', alpha = 0.9) +
-  theme_bw() +
-  labs(title =  'Сейчас музыка энергичней, чем в середине прошлого века', subtitle = 'Однако в 2020 году музыка заметно спокойнее, чем в 2010')
-''')
-img5 = Image.open('img5.png')
+  theme_bw() + 
+  labs(title =  'Если трек написан до 60-х, у него нет шансов быть популярным в 2021', subtitle = 'Интересно, что в распределении 2020 года есть два пика')
+  ''')
+img5 = Image.open('img5.png').convert('RGB')
 st.image(img5)
 
 st.code('''
-dat %>% filter(dat$year %in% c(1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020))  %>% ggplot(aes(x = energy, y = year)) + 
+dat %>% filter(dat$year %in% c(1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020))  %>% ggplot(aes(x = duration_ms, y = year)) + 
   geom_density_ridges(scale = 4, size = 1, fill = 'orange', color = 'black', alpha = 0.9) +
   theme_bw() +
-  labs(title =  'Сейчас музыка энергичней, чем в середине прошлого века', subtitle = 'Однако в 2020 году музыка заметно спокойнее, чем в 2010')
-''')
-img6 = Image.open('img6.png')
+  scale_x_continuous(limits = c(100000, 300000), expand = c(0, 0)) +  
+  labs(title =  'Чем новее трек, тем произвольней его длина', subtitle = 'Интересно, что за последние 10 лет треки стали заметно короче')
+  ''')
+img6 = Image.open('img6.png').convert('RGB')
 st.image(img6)
 
 st.header(''
