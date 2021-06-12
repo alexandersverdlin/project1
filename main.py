@@ -180,12 +180,13 @@ with st.echo(code_location="above"):
     columns = ['duration_ms', 'explicit', 'danceability', 'energy', 'key', 'loudness', 'mode', 'speechiness', 'acousticness', 'instrumentalness', 'liveness', 'tempo']
     df_coefs = pd.DataFrame()
     regr = LinearRegression()
-    st.set_option('deprecation.showPyplotGlobalUse', False)
 
+with st.echo(code_location="above"):
     for column in columns:
         X = df[[column]]
         Y = df['popularity']
         regr.fit(X, Y)
+        st.set_option('deprecation.showPyplotGlobalUse', False)
         plt.plot(1)
         df.plot.scatter(column, 'popularity', alpha=0.1, color='#33CCCC')
         plt.plot(X[column], regr.predict(X), color='#006666')
