@@ -29,6 +29,82 @@ st.markdown('''1. Pandas
 7. Графы на networkx
 ''')
 
+st.header(''
+          'Часть первая. R')
+st.markdown('''
+Поскольку R не деплоится очевидным образом на heroku, для этой части я буду приводить только код, а результат его исполнения, сохраненный заранее, буду подгружать отдельно. ''')
+st.code('''
+df_full = pd.read_csv("tracks.csv")
+df_small = df_full.sort_values(by = 'popularity', ascending = False)[0:100]
+df_small.to_csv('tracks_first_100.csv')
+''')
+st.markdown('''Посмотрим на датасет. Весь датасет слишком большой для GitHub, поэтому здесь мы посмотрим только на первые 100 строк, отсортировав по популярности исходный файл. Весь анализ на R сделан на основе исходного файла tracks.csv
+''')
+
+
+st.code('''
+```{r}
+library(tidyverse)
+library(ggridges)
+library(ggthemes)
+```
+
+```{r}
+dat = read_csv("tracks.csv")
+dat = dat %>% drop_na()
+```
+
+```{r}
+dat %>% arrange(desc(popularity)) %>% head(100)
+```
+''')
+df_first_100 = pd.read_csv("tracks_first_100.csv")
+df_first_100
+
+st.markdown('''
+Посмотрим, как меняются характеристики треков, если в них есть контент 18+ (explicit = 1) или нет (explicit = 0)
+''')
+st.code('''
+```{r}
+explicit_or_not = dat %>% group_by(explicit) %>% summarise(mean(popularity), mean(duration_ms), mean(danceability), mean(energy), mean(mode), mean(acousticness), mean(instrumentalness), mean(tempo))
+write.csv(explicit_or_not, 'explicit_or_not.csv')
+```
+''')
+pd.read_csv('explicit_or_not.csv')
+
+st.markdown('''
+Видим, что треки с контентом 18+ в среднем более энергичны. Посмотрим на распределение энергичности в зависимости от explicit, разбив дополнительно на мажорные (сверху) и минорные (снизу)
+''')
+st.code('''
+```{r}
+dat %>% ggplot(aes(x = energy, y = mode, group = mode, fill = explicit)) + 
+  geom_density_ridges(size = 1, color = 'black', alpha = 0.8) +
+  theme_bw() +
+  facet_wrap(~explicit) +
+  labs(title =  'Песни с запрещенным контентом более энергичны', subtitle = 'При этом минорные треки даже немного энергичней мажорных')
+```
+''')
+img1 = Image.open('img1.png')
+st.image(img1)
+
+st.markdown('''
+Теперь возьмем 5000 самых популярных треков. Посмотрим на их распределение в зависимости от танцевальности, минора/мажора и наличия explicit контента
+''')
+st.code('''
+```{r}
+dat %>% arrange(desc(popularity)) %>% head(5000) %>%
+  ggplot(aes(x = danceability,y = popularity, alpha = 1, color = explicit)) +
+  geom_point() +
+  theme_bw() +
+  geom_smooth(colour = 'orange', size = 1.5) +
+  facet_wrap(~mode) +
+  scale_x_continuous(limits = c(0.25, 1), expand = c(0, 0)) + 
+  labs(title = '5000 самых популярных треков: минор и мажор', subtitle =  'Мажорных треков больше, их популярность меньше зависит от танцевальности 
+Видно, что треки 18+ смещены в сторону большей танцевальности')
+```
+''')
+img2 = Image.open('img2.png')
+st.image(img2)
 
 st.header(''
           'Регрессии: чем больше мата и громче трек, тем популярней?')
@@ -100,6 +176,7 @@ st.code('''    df_full = pd.read_csv("tracks.csv")
 ''')
 
 
+
 with st.echo(code_location="above"):
 
     artists = pd.read_csv("artists_lite.csv")
@@ -147,17 +224,13 @@ with st.echo(code_location="above"):
             if artist not in vertices:
                 feat.remove(artist)
 
+    for el in feats_list:
+        if len(el) > 2 or len(el) < 2:
+            feats_list.remove(el)
 
-    for feat in feats_list:
-        feat = sorted(feat)
-
-    for feat in feats_list:
-        if len(feat) > 2:
-            for artist in feat:
-                for artist2 in feat:
-                    if artist2 > artist:
-                        feats_list.append([artist, artist2])
-        feats_list.remove(feat)
+    for el in feats_list:
+        if len(el) > 3:
+            feats_list.remove(el)
 
 st.markdown('''
 Посмотреть на получившие кортежи фитов можно, раскрыв вывод. Эти кортежи и будут ребрами графа''')
