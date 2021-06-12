@@ -58,6 +58,13 @@ df_first_100 = pd.read_csv("tracks_first_100.csv")
 df_first_100
 
 st.markdown('''
+'Помимо названия, списка исполнителей, даты релиза и популярности тут есть много других метрик. Значение большинства понятно из названия, уточним лишь некоторые:'
+'mode (0 - мажор, 1 - минор),'
+'key (тональность, от 0 до 11, начиная от C),'
+'explicit (0 - нет контента 18+, 1 - есть)'
+''')
+
+st.markdown('''
 Посмотрим, как меняются характеристики треков, если в них есть контент 18+ (explicit = 1) или нет (explicit = 0)
 ''')
 st.code('''
@@ -96,6 +103,54 @@ dat %>% arrange(desc(popularity)) %>% head(5000) %>%
 ''')
 img2 = Image.open('img2.png')
 st.image(img2)
+
+st.markdown('''
+Далее проведем анализ популярности с помощью ridge plots. Мы будем смотреть, как с годами менялось распределение популярности треков в зависимости от разных факторов
+''')
+st.markdown('''
+Сначала создадим столбец year и приведем его к формату даты''')
+
+st.code('''
+dat$release_date = as.Date(dat$release_date)
+dat$year = format(dat$release_date, "%Y")
+''')
+st.markdown('''
+Теперь давайте смотреть на получившиеся графики''')
+st.code('''
+dat %>% filter(dat$year %in% c(1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020))  %>% ggplot(aes(x = energy, y = year)) + 
+  geom_density_ridges(scale = 4, size = 1, fill = 'orange', color = 'black', alpha = 0.9) +
+  theme_bw() +
+  labs(title =  'Сейчас музыка энергичней, чем в середине прошлого века', subtitle = 'Однако в 2020 году музыка заметно спокойнее, чем в 2010')
+''')
+img3 = Image.open('img3.png').convert('RGB')
+st.image(img3)
+
+st.code('''
+dat %>% filter(dat$year %in% c(1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020))  %>% ggplot(aes(x = energy, y = year)) + 
+  geom_density_ridges(scale = 4, size = 1, fill = 'orange', color = 'black', alpha = 0.9) +
+  theme_bw() +
+  labs(title =  'Сейчас музыка энергичней, чем в середине прошлого века', subtitle = 'Однако в 2020 году музыка заметно спокойнее, чем в 2010')
+''')
+img4 = Image.open('img4.png').convert('RGB')
+st.image(img4)
+
+st.code('''
+dat %>% filter(dat$year %in% c(1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020))  %>% ggplot(aes(x = energy, y = year)) + 
+  geom_density_ridges(scale = 4, size = 1, fill = 'orange', color = 'black', alpha = 0.9) +
+  theme_bw() +
+  labs(title =  'Сейчас музыка энергичней, чем в середине прошлого века', subtitle = 'Однако в 2020 году музыка заметно спокойнее, чем в 2010')
+''')
+img5 = Image.open('img5.png')
+st.image(img5)
+
+st.code('''
+dat %>% filter(dat$year %in% c(1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020))  %>% ggplot(aes(x = energy, y = year)) + 
+  geom_density_ridges(scale = 4, size = 1, fill = 'orange', color = 'black', alpha = 0.9) +
+  theme_bw() +
+  labs(title =  'Сейчас музыка энергичней, чем в середине прошлого века', subtitle = 'Однако в 2020 году музыка заметно спокойнее, чем в 2010')
+''')
+img6 = Image.open('img6.png')
+st.image(img6)
 
 st.header(''
           'Часть вторая. Python')
