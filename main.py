@@ -42,23 +42,17 @@ df_small = df_full.sort_values(by = 'popularity', ascending = False)[0:100]
 df_small.to_csv('tracks_first_100.csv')
 ''')
 st.markdown('''
-А вот таким кодом мы это сделаем в R:
+А вот таким кодом мы начнем проект и выведем датасет в R:
 ''')
 st.code('''
-```{r}
 library(tidyverse)
 library(ggridges)
 library(ggthemes)
-```
 
-```{r}
 dat = read_csv("tracks.csv")
 dat = dat %>% drop_na()
-```
 
-```{r}
 dat %>% arrange(desc(popularity)) %>% head(100)
-```
 ''')
 df_first_100 = pd.read_csv("tracks_first_100.csv")
 df_first_100
@@ -67,10 +61,8 @@ st.markdown('''
 Посмотрим, как меняются характеристики треков, если в них есть контент 18+ (explicit = 1) или нет (explicit = 0)
 ''')
 st.code('''
-```{r}
 explicit_or_not = dat %>% group_by(explicit) %>% summarise(mean(popularity), mean(duration_ms), mean(danceability), mean(energy), mean(mode), mean(acousticness), mean(instrumentalness), mean(tempo))
 write.csv(explicit_or_not, 'explicit_or_not.csv')
-```
 ''')
 explicit = pd.read_csv('explicit_or_not.csv')
 explicit
@@ -79,13 +71,11 @@ st.markdown('''
 Видим, что треки с контентом 18+ в среднем более энергичны. Посмотрим на распределение энергичности в зависимости от explicit, разбив дополнительно на мажорные (сверху) и минорные (снизу)
 ''')
 st.code('''
-```{r}
 dat %>% ggplot(aes(x = energy, y = mode, group = mode, fill = explicit)) + 
   geom_density_ridges(size = 1, color = 'black', alpha = 0.8) +
   theme_bw() +
   facet_wrap(~explicit) +
   labs(title =  'Песни с запрещенным контентом более энергичны', subtitle = 'При этом минорные треки даже немного энергичней мажорных')
-```
 ''')
 img1 = Image.open('img1.png')
 st.image(img1)
@@ -94,7 +84,6 @@ st.markdown('''
 Теперь возьмем 5000 самых популярных треков. Посмотрим на их распределение в зависимости от танцевальности, минора/мажора и наличия explicit контента
 ''')
 st.code('''
-```{r}
 dat %>% arrange(desc(popularity)) %>% head(5000) %>%
   ggplot(aes(x = danceability,y = popularity, alpha = 1, color = explicit)) +
   geom_point() +
@@ -104,16 +93,16 @@ dat %>% arrange(desc(popularity)) %>% head(5000) %>%
   scale_x_continuous(limits = c(0.25, 1), expand = c(0, 0)) + 
   labs(title = '5000 самых популярных треков: минор и мажор', subtitle =  'Мажорных треков больше, их популярность меньше зависит от танцевальности 
 Видно, что треки 18+ смещены в сторону большей танцевальности')
-```
 ''')
 img2 = Image.open('img2.png')
 st.image(img2)
 
-
+st.header(''
+          'Часть вторая. Python')
 
 st.header(''
           'Регрессии: чем больше мата и громче трек, тем популярней?')
-st.markdown('''Пора посмотреть на датасет песен. К сожалению, файл слишком большой, чтобы влезть на GitHub, поэтому для регрессии нам придется оставить только его пятую часть, рандомные 100000 строк. Это сделано с помощью следующего кода:''')
+st.markdown('''Так как исходный файл слишком большой, для регрессии нам придется оставить только его пятую часть, рандомные 100000 строк. Это сделано с помощью следующего кода:''')
 
 st.code('''
     df_full = pd.read_csv("tracks.csv")
@@ -122,10 +111,7 @@ st.code('''
     ''')
 
 st.markdown('''
-Посмотрим на датасет. Помимо названия, списка исполнителей, даты релиза и популярности тут есть много других метрик. Значение большинства понятно из названия, уточним лишь некоторые:
-mode (0 - мажор, 1 - минор),
-key (тональность, от 0 до 11, начиная от C),
-explicit (0 - нет контента 18+, 1 - есть)
+Посмотрим еще раз на датасет
 ''')
 with st.echo(code_location="above"):
     df = pd.read_csv("tracks_lite.csv")
