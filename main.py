@@ -33,15 +33,17 @@ st.header(''
           'Часть первая. R')
 st.markdown('''
 Поскольку R не деплоится очевидным образом на heroku, для этой части я буду приводить только код, а результат его исполнения, сохраненный заранее, буду подгружать отдельно. ''')
+
+st.markdown('''Весь датасет слишком большой для GitHub, поэтому для первого знакомства мы посмотрим только на первые 100 строк, отсортировав по популярности исходный файл. Весь анализ на R сделан на основе полного исходного файла tracks.csv. Следующий код сделает нам датасет для ознакомления:
+''')
 st.code('''
 df_full = pd.read_csv("tracks.csv")
 df_small = df_full.sort_values(by = 'popularity', ascending = False)[0:100]
 df_small.to_csv('tracks_first_100.csv')
 ''')
-st.markdown('''Посмотрим на датасет. Весь датасет слишком большой для GitHub, поэтому здесь мы посмотрим только на первые 100 строк, отсортировав по популярности исходный файл. Весь анализ на R сделан на основе исходного файла tracks.csv
+st.markdown('''
+А вот таким кодом мы это сделаем в R:
 ''')
-
-
 st.code('''
 ```{r}
 library(tidyverse)
@@ -70,7 +72,8 @@ explicit_or_not = dat %>% group_by(explicit) %>% summarise(mean(popularity), mea
 write.csv(explicit_or_not, 'explicit_or_not.csv')
 ```
 ''')
-pd.read_csv('explicit_or_not.csv')
+explicit = pd.read_csv('explicit_or_not.csv')
+explicit
 
 st.markdown('''
 Видим, что треки с контентом 18+ в среднем более энергичны. Посмотрим на распределение энергичности в зависимости от explicit, разбив дополнительно на мажорные (сверху) и минорные (снизу)
@@ -105,6 +108,56 @@ dat %>% arrange(desc(popularity)) %>% head(5000) %>%
 ''')
 img2 = Image.open('img2.png')
 st.image(img2)
+
+st.markdown('''
+Далее проведем анализ популярности с помощью ridge plots. Мы будем смотреть, как с годами менялось распределение популярности треков в зависимости от разных факторов
+''')
+st.markdown('''
+Сначала создадим столбец year и приведем его к формату даты''')
+
+st.code('''
+```{r}
+dat$release_date = as.Date(dat$release_date)
+dat$year = format(dat$release_date, "%Y")
+```
+''')
+st.markdown('''
+Теперь давайте смотреть на получившиеся графики''')
+st.code('''
+dat %>% filter(dat$year %in% c(1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020))  %>% ggplot(aes(x = energy, y = year)) + 
+  geom_density_ridges(scale = 4, size = 1, fill = 'orange', color = 'black', alpha = 0.9) +
+  theme_bw() +
+  labs(title =  'Сейчас музыка энергичней, чем в середине прошлого века', subtitle = 'Однако в 2020 году музыка заметно спокойнее, чем в 2010')
+''')
+img3 = Image.open('img3.png')
+st.image(img3)
+
+st.code('''
+dat %>% filter(dat$year %in% c(1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020))  %>% ggplot(aes(x = energy, y = year)) + 
+  geom_density_ridges(scale = 4, size = 1, fill = 'orange', color = 'black', alpha = 0.9) +
+  theme_bw() +
+  labs(title =  'Сейчас музыка энергичней, чем в середине прошлого века', subtitle = 'Однако в 2020 году музыка заметно спокойнее, чем в 2010')
+''')
+img4 = Image.open('img4.png')
+st.image(img4)
+
+st.code('''
+dat %>% filter(dat$year %in% c(1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020))  %>% ggplot(aes(x = energy, y = year)) + 
+  geom_density_ridges(scale = 4, size = 1, fill = 'orange', color = 'black', alpha = 0.9) +
+  theme_bw() +
+  labs(title =  'Сейчас музыка энергичней, чем в середине прошлого века', subtitle = 'Однако в 2020 году музыка заметно спокойнее, чем в 2010')
+''')
+img5 = Image.open('img5.png')
+st.image(img5)
+
+st.code('''
+dat %>% filter(dat$year %in% c(1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020))  %>% ggplot(aes(x = energy, y = year)) + 
+  geom_density_ridges(scale = 4, size = 1, fill = 'orange', color = 'black', alpha = 0.9) +
+  theme_bw() +
+  labs(title =  'Сейчас музыка энергичней, чем в середине прошлого века', subtitle = 'Однако в 2020 году музыка заметно спокойнее, чем в 2010')
+''')
+img6 = Image.open('img6.png')
+st.image(img6)
 
 st.header(''
           'Регрессии: чем больше мата и громче трек, тем популярней?')
@@ -302,19 +355,11 @@ with st.echo(code_location="above"):
     df_celebs = pd.read_csv('celebs.csv')
     df_celebs
 
-st.markdown(''
-            'Посмотрим, из каких стран самые популярные знаменитости в инстаграме')
-
-with st.echo(code_location="above"):
-    st.set_option('deprecation.showPyplotGlobalUse', False)
-    plt.plot(1)
-    df_celebs['country'].value_counts().sort_values().plot.pie(y='mln_followers', labeldistance=1.1, legend=None,
-                                                               figsize=(7, 7))
-    fig = plt.plot()
-    st.pyplot(fig)
 
 st.markdown(''
-            'А вот и музыканты: по сумме подписчиков музыканты в отрыве от остальных родов занятий. При этом музыканты появляются и в других категориях: музыка является трамплином для того, чтобы оказаться в новых сферах')
+            'Посмотрим, у какого рода занятий больше всего подписчиков')
+st.markdown(''
+            'По сумме подписчиков музыканты в отрыве от остальных родов занятий. При этом музыканты появляются и в других категориях: музыка является трамплином для того, чтобы оказаться в новых сферах')
 
 with st.echo(code_location="above"):
     st.set_option('deprecation.showPyplotGlobalUse', False)
